@@ -241,15 +241,16 @@
 					,top: 0
 					,left: 0
 				}).attr("id","page-cover").hide().fadeIn(750));
+				
 				setTimeout(function(){
-					$(document).bind('click.cutera', function(){
+					$(document).bind('click.cutera', function(e){
 						console.log('heyo');
 						flip = flip.close();
 						$(document).unbind('click.cutera');
 						$("#page-cover").fadeOut(500, function(){$(this).remove();});
 					})
-					},100);
-			//$(backOfCard[0]).show()
+				},100);
+
 		});
 		
 		function touchHandler(event)

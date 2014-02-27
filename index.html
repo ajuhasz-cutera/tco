@@ -83,10 +83,10 @@
 					</div>
 					<div class="row-fluid">
 						<div class="span6">
-							Treatments per year
+							Treatments per month
 						</div>
 						<div class="span6">
-								<input type="text" class="span12" placeholder="" value="1000" id="totalTreatments">
+								<input type="text" class="span12" placeholder="" value="30" id="totalTreatments">
 						</div>
 					</div> 
 					<div class="row-fluid">
@@ -164,6 +164,7 @@
 			interestRate = parseFloat(interestRate);
 			
 			var totalTreatments = parseFloat($("#totalTreatments").val());
+			totalTreatments = totalTreatments * 12;
 			var shotsPerTime = (totalTreatments*shotsPerTreatment)/12*timeSpan;
 			
 			var cuteraCost = parseFloat($("#cuteraMachineCost").val());
@@ -225,21 +226,52 @@
 				// Set default options on all series, turn on smoothing.
 				seriesDefaults: {
 					rendererOptions: {
-					smooth: true
+					smooth: false
 					}
 				},
 				// Series options are specified as an array of objects, one object
 				// for each series.
 				series:[ 
-					{
+					{	//cutera
 						lineWidth:4, 
-						markerOptions: { show:false }
+						markerOptions: { show:false },
+						color: '#afbe85',
+						shadow: false,
 					}, 
-					{
+					{	//competitor
 						lineWidth:2, 
-						markerOptions: { show:false }
+						markerOptions: { show:false },
+						color: '#c333a5',
+						shadow: false,
 					}
-				]
+				],
+				grid: {
+					background: '#ffffff',
+				},
+				axes: {
+					xaxis: {
+						min: 1,
+						max: timeSpan,
+						numberTicks: timeSpan/1,
+						label: "month",
+						labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+						labelOptions: {
+							fontFamily: 'Georgia, Serif',
+							fontSize: '12pt'
+						},
+					},
+					yaxis: {
+						min: 0,
+						label: "cost",
+						labelOptions: {
+							fontFamily: 'Georgia, Serif',
+							fontSize: '12pt'
+						},
+						tickOptions: {
+							 formatString: "$%'.1f"
+						},
+					},
+				},
 			});
 		}
 	

@@ -233,12 +233,14 @@
 				// for each series.
 				series:[ 
 					{	//cutera
+						label:'Cutera',
 						lineWidth:4, 
 						markerOptions: { show:false },
 						color: '#afbe85',
 						shadow: false,
 					}, 
 					{	//competitor
+						label: 'Candela',
 						lineWidth:2, 
 						markerOptions: { show:false },
 						color: '#c333a5',
@@ -271,6 +273,10 @@
 							 formatString: "$%'.1f"
 						},
 					},
+				},
+				legend: {
+					show: true,
+					location: 'nw',
 				},
 			});
 		}

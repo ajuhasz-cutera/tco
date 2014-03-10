@@ -35,11 +35,22 @@
 							</div>
 						</div>
 					</div>
+					<div class="row-fluid">
+						<div class="span6">
+							Consumable Cost
+						</div>
+						<div class="span6">
+							<div class="input-prepend">
+								<span class="add-on span3">$</span>
+								<input type="text" class="span9" placeholder="" value="0"  id="cuteraConsumableCost">
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="well back cutetaBack">
 					<div class="row-fluid">
 						<div class="span8">
-							<h2>Cutera</h2>
+							<h4>Cutera Consumable Cost Breakdown</h4>
 						</div>
 					</div>
 				</div>
@@ -65,11 +76,22 @@
 							</div>
 						</div>
 					</div> 
+					<div class="row-fluid">
+						<div class="span6">
+							Consumable Cost
+						</div>
+						<div class="span6">
+							<div class="input-prepend">
+								<span class="add-on span3">$</span>
+								<input type="text" class="span9" placeholder="" value="0"  id="compConsumableCost">
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="well back compBack">
 					<div class="row-fluid">
 						<div class="span8">
-							<h2>Candela</h2>
+							<h4>Candela Consumable Cost Breakdown</h4>
 						</div>
 					</div>
 				</div>
@@ -91,7 +113,7 @@
 					</div> 
 					<div class="row-fluid">
 						<div class="span6">
-							Time frame
+							Duration of Lease
 						</div>
 						<div class="span6">
 							<select class="span12"  id="timeFrame">
@@ -103,7 +125,7 @@
 					</div> 
 					<div class="row-fluid">
 						<div class="span6">
-							Rate
+							Interest Rate
 						</div>
 						<div class="span6">
 								<input type="text" class="span12" placeholder="" value="6.00" id="interestRate">
@@ -179,7 +201,7 @@
 			}
 			var cuteraPerMonthCost = cuteraCost * ( (interestRate/100/12)/(1-Math.pow(1+interestRate/100/12,-1*timeSpan)));
 			for(var property in cuteraAssumptions.perMonth) {
-				cuteraPerMonthCost = cuteraPerYearCost + cuteraAssumptions.perMonth[property];
+				cuteraPerMonthCost = cuteraPerMonthCost + cuteraAssumptions.perMonth[property];
 			}
 			
 			var cuteraTotalCost = new Array();
@@ -205,7 +227,7 @@
 			}
 			var compPerMonthCost = compCost * ( (interestRate/100/12)/(1-Math.pow(1+interestRate/100/12,-1*timeSpan)));
 			for(var property in competitorAssumptions.perMonth) {
-				compPerMonthCost = cuteraPerYearCost + competitorAssumptions.perMonth[property];
+				compPerMonthCost = compPerMonthCost + competitorAssumptions.perMonth[property];
 			}
 			
 			var compTotalCost = new Array();
@@ -219,6 +241,13 @@
 				}
 				compTotalCost.push(costSoFar);
 			}
+			
+			var compConsumablePerMonthCost = 0;
+			for(var property in competitorAssumptions.perMonth) {
+				compConsumablePerMonthCost = compConsumablePerMonthCost + competitorAssumptions.perMonth[property];
+			}
+			var totalConsumableCost = compConsumablePerMonthCost*timeSpan + shotsPerTime*timeSpan*compPerTreatmentCost + compPerYearCost*((timeSpan/12)-1);
+			$('#compConsumableCost').val(totalConsumableCost.toFixed(0));
 			
 			$("#chartdiv").empty();
 			thePlot = null;

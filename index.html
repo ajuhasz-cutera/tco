@@ -78,7 +78,7 @@
 					</div> 
 					<div class="row-fluid">
 						<div class="span6">
-							Consumable Cost
+							Total Consumable Cost over liftetime of lease
 						</div>
 						<div class="span6">
 							<div class="input-prepend">
@@ -178,36 +178,36 @@
 		var shotsPerTreatment = 30;
 		
 		function updateGraph() {
-			var timeSpan = $("#timeFrame").val();
-			timeSpan = parseFloat(timeSpan.replace(/\D/g,''));
-			timeSpan = timeSpan * 12;
+			var totalNumberOfYears = $("#timeFrame").val();
+			totalNumberOfYears = parseFloat(totalNumberOfYears.replace(/\D/g,''));
+			var totalNumberOfMonths = totalNumberOfYears * 12;
 			
 			var interestRate = $("#interestRate").val();
 			interestRate = parseFloat(interestRate);
 			
-			var totalTreatments = parseFloat($("#totalTreatments").val());
-			totalTreatments = totalTreatments * 12;
-			var shotsPerTime = (totalTreatments*shotsPerTreatment)/12*timeSpan;
+			var treatmentsPerMonth = parseFloat($("#totalTreatments").val());
+			var treatmentsPerYear = treatmentsPerMonth * 12;
+			var shotsPerMonth = (treatmentsPerMonth*shotsPerTreatment);
 			
 			var cuteraCost = parseFloat($("#cuteraMachineCost").val());
 			
-			var cuteraPerTreatmentCost = 0;
+			var cuteraPerShotCost = 0;
 			for(var property in cuteraAssumptions.perShot) {
-				cuteraPerTreatmentCost = cuteraPerTreatmentCost + cuteraAssumptions.perShot[property];
+				cuteraPerShotCost = cuteraPerShotCost + cuteraAssumptions.perShot[property];
 			}
 			var cuteraPerYearCost = 0;
 			for(var property in cuteraAssumptions.perYear) {
 				cuteraPerYearCost = cuteraPerYearCost + cuteraAssumptions.perYear[property];
 			}
-			var cuteraPerMonthCost = cuteraCost * ( (interestRate/100/12)/(1-Math.pow(1+interestRate/100/12,-1*timeSpan)));
+			var cuteraPerMonthCost = cuteraCost * ( (interestRate/100/12)/(1-Math.pow(1+interestRate/100/12,-1*totalNumberOfMonths)));	//interest payment
 			for(var property in cuteraAssumptions.perMonth) {
 				cuteraPerMonthCost = cuteraPerMonthCost + cuteraAssumptions.perMonth[property];
 			}
 			
 			var cuteraTotalCost = new Array();
 			cuteraTotalCost[0] = 0;
-			for(var month=1; month<timeSpan; month++) {
-				var costSoFar = cuteraTotalCost[month-1] + shotsPerTime*1*cuteraPerTreatmentCost + cuteraPerMonthCost;
+			for(var month=1; month<totalNumberOfMonths; month++) {
+				var costSoFar = cuteraTotalCost[month-1] + shotsPerMonth*1*cuteraPerShotCost + cuteraPerMonthCost;
 				
 				if (month > 0 && month % 12 == 0) {
 					costSoFar = costSoFar + cuteraPerYearCost;
@@ -217,15 +217,15 @@
 			}
 			
 			var compCost = parseFloat($("#compMachineCost").val());
-			var compPerTreatmentCost = 0;
+			var compPerShotCost = 0;
 			for(var property in competitorAssumptions.perShot) {
-				compPerTreatmentCost = compPerTreatmentCost + competitorAssumptions.perShot[property];
+				compPerShotCost = compPerShotCost + competitorAssumptions.perShot[property];
 			}
 			var compPerYearCost = 0;
 			for(var property in competitorAssumptions.perYear) {
 				compPerYearCost = compPerYearCost + competitorAssumptions.perYear[property];
 			}
-			var compPerMonthCost = compCost * ( (interestRate/100/12)/(1-Math.pow(1+interestRate/100/12,-1*timeSpan)));
+			var compPerMonthCost = compCost * ( (interestRate/100/12)/(1-Math.pow(1+interestRate/100/12,-1*totalNumberOfMonths)));
 			for(var property in competitorAssumptions.perMonth) {
 				compPerMonthCost = compPerMonthCost + competitorAssumptions.perMonth[property];
 			}
@@ -233,8 +233,8 @@
 			var compTotalCost = new Array();
 			compTotalCost[0] = 0;
 			
-			for(var month=1; month<timeSpan; month++) {
-				var costSoFar =  compTotalCost[month-1] +  shotsPerTime*1*compPerTreatmentCost + compPerMonthCost;
+			for(var month=1; month<totalNumberOfMonths; month++) {
+				var costSoFar =  compTotalCost[month-1] +  shotsPerMonth*1*compPerShotCost + compPerMonthCost;
 
 				if (month > 0 && month % 12 == 0) {
 					costSoFar = costSoFar + compPerYearCost;
@@ -246,7 +246,7 @@
 			for(var property in competitorAssumptions.perMonth) {
 				compConsumablePerMonthCost = compConsumablePerMonthCost + competitorAssumptions.perMonth[property];
 			}
-			var totalConsumableCost = compConsumablePerMonthCost*timeSpan + shotsPerTime*timeSpan*compPerTreatmentCost + compPerYearCost*((timeSpan/12)-1);
+			var totalConsumableCost = compConsumablePerMonthCost*totalNumberOfMonths + shotsPerMonth*totalNumberOfMonths*compPerShotCost + compPerYearCost*(totalNumberOfYears-1);
 			$('#compConsumableCost').val(totalConsumableCost.toFixed(0));
 			
 			$("#chartdiv").empty();
@@ -282,8 +282,8 @@
 				axes: {
 					xaxis: {
 						min: 1,
-						max: timeSpan,
-						numberTicks: timeSpan/1,
+						max: totalNumberOfMonths,
+						numberTicks: totalNumberOfMonths/1,
 						label: "month",
 						labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
 						labelOptions: {
